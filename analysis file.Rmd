@@ -3,18 +3,31 @@ title: "Assignment rmd file"
 output: html_document
 ---
 
-Set the working directory
+#Reading in the data from the dropbox folder
 
-```{r}
+```{r reading in the data}
 setwd("~/Dropbox/CourseraPML")
+
+training <- read.csv("~/Dropbox/CourseraPML/pml-training.csv", stringsAsFactors=FALSE,na.strings=c("NA","#DIV/0!",""))
+testing <- read.csv("~/Dropbox/CourseraPML/pml-testing.csv", stringsAsFactors=FALSE,na.strings=c("NA","#DIV/0!",""))
+
+dim(training)
+```
+
+## Partioning the training set into two
+Partioning Training data set into two data sets,80% myTraining, 20% for myTesting:
+
+
+```{r }
+library(caret)
+part <- createDataPartition(training$classe,p=.8,list=FALSE) ## create a partion indedx
+
+mytraining <- training[part,] ; mytesting <- training[-part,]
 
 ```
 
-Read in the training file
-
+## Cleaning the data
 ```{r}
-pml.training <- read.csv("~/Dropbox/CourseraPML/pml-training.csv", stringsAsFactors=FALSE)
-
 
 ```
 
