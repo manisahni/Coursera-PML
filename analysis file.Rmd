@@ -45,7 +45,7 @@ df_all_var[,colSums(is.na(df_all_var))==0]
 # Remove Columsn with NAs
 df_rm_na <- df_all_var[ , colSums(is.na(df_all_var)) == 0]
 # Find Correlated variables 
-df_corr <- cor(subset(df_rm_na, select=-classe))
+df_corr <- cor(subset(df_rm_na, select=-classe)) ##
 
 ```
 
