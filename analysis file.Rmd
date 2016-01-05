@@ -40,7 +40,7 @@ nzv_list <- as.data.frame(nearZeroVar(mytraining, saveMetrics=TRUE))
 remaining <- nzv_list[which(nzv_list$nzv==FALSE),]
 df_all_var <- subset(mytraining, select=rownames(remaining))
 
-df_all_var[ , colSums(is.na(df_all_var)) == 0)
+df_all_var[ , colSums(is.na(df_all_var)) == 0))
 # Remove Columsn with NAs
 df_rm_na <- df_all_var[ , colSums(is.na(df_all_var)) == 0]
 # Find Correlated variables 
