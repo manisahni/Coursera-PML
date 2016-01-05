@@ -1,0 +1,20 @@
+---
+title: "Assignment rmd file"
+output: html_document
+---
+
+Set the working directory
+
+```{r}
+setwd("~/Dropbox/CourseraPML")
+
+```
+
+Read in the training file
+
+```{r}
+pml.training <- read.csv("~/Dropbox/CourseraPML/pml-training.csv", stringsAsFactors=FALSE)
+
+
+```
+
