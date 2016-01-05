@@ -49,3 +49,17 @@ df_corr <- cor(subset(df_rm_na, select=-classe)) ##
 
 ```
 
+
+
+```{r}
+library(randomForest)
+library(e1071)
+
+set.seed(575656)
+### Run full model!
+mod_rf_full <- train(classe~ . 
+              ,method='rf'
+              ,allowParallel=TRUE
+              ,data = df_rm_na)
+```
+
