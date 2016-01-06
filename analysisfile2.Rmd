@@ -18,7 +18,9 @@ The goal of your project is to predict the manner in which they did the exercise
 #Reading in the data  
 
 
+<<<<<<< HEAD
 ```{r reading in the data,echo=FALSE}
+
 setwd("~/Dropbox/CourseraPML")
 
 set.seed(12345)
@@ -33,7 +35,9 @@ dim(training)
 Partioning Training data set into two data sets,80% myTraining, 20% for myTesting using the caret package:
 
 
+
 ```{r,echo=FALSE,warning=FALSE}
+
 library(caret)
 part <- createDataPartition(training$classe,p=.8,list=FALSE) ## create a partion index
 mytraining <- training[part,] ; mytesting <- training[-part,] ## use the
@@ -48,6 +52,7 @@ Methods for cleaning and preparing the data for model training:
 3) Remove columns with NA values in them.
 
 ```{r}
+
 library(dplyr) 
 mytraining <- mytraining[,-c(1:7)] #Remove catagorical variables 
 
