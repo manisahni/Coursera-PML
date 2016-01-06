@@ -1,0 +1,127 @@
+---
+title: "Coursera Practical Machine Learning Assignment"
+output: html_document
+---
+
+
+
+#Background Introduction
+These are the files produced during a homework assignment of Coursera’s MOOC Practical Machine Learning from Johns Hopkins University. Here is the introduction of the exercise:
+
+“Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement ??? a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+## Goal
+The goal of your project is to predict the manner in which they did the exercise. This is the “classe” variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.
+
+
+
+#Reading in the data  
+
+
+```{r reading in the data,echo=FALSE,cache=TRUE}
+setwd("~/Dropbox/CourseraPML")
+
+set.seed(12345)
+
+training <- read.csv("~/Dropbox/CourseraPML/pml-training.csv", stringsAsFactors=FALSE,na.strings=c("NA","#DIV/0!",""))
+testing <- read.csv("~/Dropbox/CourseraPML/pml-testing.csv", stringsAsFactors=FALSE,na.strings=c("NA","#DIV/0!",""))
+
+dim(training)
+```
+
+# Partioning the training set into two
+Partioning Training data set into two data sets,80% myTraining, 20% for myTesting using the caret package:
+
+
+```{r,echo=FALSE,warning=FALSE,cache=TRUE}
+library(caret)
+part <- createDataPartition(training$classe,p=.8,list=FALSE) ## create a partion index
+mytraining <- training[part,] ; mytesting <- training[-part,] ## use the
+
+```
+
+# Cleaning the data
+
+Methods for cleaning and preparing the data for model training:
+1) Remove catagorical variables from dataset including “X”, “user_name”, “raw_timestamp_part_1”, “raw_timestamp_part_2”, “cvtd_timestamp”, “new_window”, “num_window”.
+2) Remove any features that have little variance or information value using nearZeroVar().
+3) Remove columns with NA values in them.
+
+```{r, cache=TRUE}
+library(dplyr) 
+mytraining <- mytraining[,-c(1:7)] #Remove catagorical variables 
+
+nzv_list <- as.data.frame(nearZeroVar(mytraining, saveMetrics=TRUE))
+remaining <- nzv_list[which(nzv_list$nzv==FALSE),]
+df_all_var <- subset(mytraining, select=rownames(remaining))
+
+# Remove Columsn with NAs
+df_rm_na <- df_all_var[ , colSums(is.na(df_all_var)) == 0]
+# Find Correlated variables 
+df_corr <- cor(subset(df_rm_na, select=-classe)) ##
+
+```
+
+# Making the random forest model
+
+Construct a random foret model. 
+
+```{r, cache=TRUE,eval=FALSE}
+library(randomForest)
+library(e1071)
+
+set.seed(575656)
+### Run full model!
+mod_rf_full <- train(classe~ . 
+              ,method='rf'
+              ,allowParallel=TRUE
+              ,data = df_rm_na,do.Trace=TRUE)
+```
+
+
+Save the random forest model for loading in the future.
+
+```{r,eval=FALSE}
+save(mod_rf_full, file = "mod_rf_full_002.RData")
+
+```
+
+# Print the final model details for the Random Forest Model
+
+Load back the random forest model and print the results
+
+```{r}
+load("/Users/nishantsahni/Dropbox/CourseraPML/mod_rf_full_002.RData")
+mod_rf_full
+
+```
+
+# Examine Variable importance
+
+```{r, warning=FALSE}
+library(caret)
+library(randomForest)
+varImp(mod_rf_full, useModel=TRUE)
+```
+
+
+# Validate performace on the testing dataset (out of sample) .
+
+We will use the confusionMatrix function to calculate the performance across all the classes. We see that the model performs very well with accuracy of 99.8% and very high senstivity and specificty across all the classes. The out of sample error rate is less than 0.1 percent
+
+```{r}
+rf_full_predictions <- predict(mod_rf_full, newdata = mytesting) 
+confusionMatrix(as.vector(rf_full_predictions), mytesting$classe)
+```
+
+# Get predictions for the 20 readings.
+
+We will get a vector of predictions for the 20 provided readings
+
+```{r}
+prediction <- as.vector(predict(mod_rf_full, newdata = testing))
+
+prediction
+```
+
+
