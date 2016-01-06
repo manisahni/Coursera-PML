@@ -18,7 +18,6 @@ The goal of your project is to predict the manner in which they did the exercise
 #Reading in the data  
 
 
-<<<<<<< HEAD
 ```{r reading in the data,echo=FALSE}
 
 setwd("~/Dropbox/CourseraPML")
