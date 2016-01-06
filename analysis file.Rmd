@@ -38,6 +38,7 @@ Look at the correlation of the remaining attributes and decide whether they need
 library(dplyr) 
 mytraining <- mytraining[,-c(1:7)] #Remove catagorical variables 
 
+
 nzv_list <- as.data.frame(nearZeroVar(mytraining, saveMetrics=TRUE))
 remaining <- nzv_list[which(nzv_list$nzv==FALSE),]
 df_all_var <- subset(mytraining, select=rownames(remaining))
@@ -49,9 +50,9 @@ df_corr <- cor(subset(df_rm_na, select=-classe)) ##
 
 ```
 
+# Making the random forest model
 
-
-```{r}
+```{r, cache=TRUE,eval=FALSE}
 library(randomForest)
 library(e1071)
 
@@ -60,6 +61,20 @@ set.seed(575656)
 mod_rf_full <- train(classe~ . 
               ,method='rf'
               ,allowParallel=TRUE
-              ,data = df_rm_na)
+              ,data = df_rm_na,do.Trace=TRUE)
 ```
+
+
+```{r,eval=FALSE}
+save(mod_rf_full, file = "mod_rf_full_002.RData")
+```
+
+# Print the final model details for the Random Forest Model
+
+
+```{r}
+print(mod_rf_full$finalModel)
+
+```
+
 
